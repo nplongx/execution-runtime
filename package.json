@@ -1,6 +1,6 @@
 {
   "name": "@runalith/execution-runtime",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Execution runtime persistence, provider adapters and bounded execution contracts for Runalith.",
   "license": "MIT",
   "type": "module",
@@ -12,7 +12,8 @@
     "./execution-contract": "./src/execution-contract.js",
     "./runner-admission": "./src/runner-admission-broker.js",
     "./github-actions-provider": "./src/github-actions-provider.js",
-    "./deterministic-runner-provider": "./src/deterministic-runner-provider.js"
+    "./deterministic-runner-provider": "./src/deterministic-runner-provider.js",
+    "./gateway-specialist-adapter": "./src/gateway-specialist-adapter.js"
   },
   "files": [
     "index.js",

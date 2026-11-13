@@ -22,7 +22,7 @@ try {
   const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', temporaryRoot], root, 'npm pack'));
   assert.equal(packed.length, 1);
   assert.equal(packed[0].name, '@runalith/execution-runtime');
-  assert.equal(packed[0].version, '0.1.5');
+  assert.equal(packed[0].version, '0.1.6');
   const tarball = path.join(temporaryRoot, packed[0].filename);
   run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--prefix', consumerRoot, tarball], root,
     'install packed Execution Runtime into clean consumer');
@@ -33,7 +33,7 @@ try {
       'ExecutionPersistenceStore','createExecutionPersistencePort','resolveExecutionPersistencePort','createExecutionPersistenceParticipant',
       'createExecutionRequest','createExecutionResult','providerDispatchKey','ProviderAdmissionController',
       'isProviderRateLimitError','GitHubOidcVerifier','RunnerAdmissionBroker','createRunnerAdmissionBroker',
-      'GitHubActionsProvider','DeterministicRunnerProvider']) {
+      'GitHubActionsProvider','DeterministicRunnerProvider','GatewaySpecialistAdapter']) {
       assert.equal(typeof api[key], 'function', key + ' must be exported by packed artifact');
     }
     console.log('packed Execution Runtime public API PASS');
@@ -47,6 +47,10 @@ try {
     const deterministicRunner = await import('@runalith/execution-runtime/deterministic-runner-provider');
     assert.equal(deterministicRunner.DeterministicRunnerProvider, api.DeterministicRunnerProvider);
     console.log('packed Deterministic Runner Provider subpath PASS');
+    const gatewaySpecialist = await import('@runalith/execution-runtime/gateway-specialist-adapter');
+    assert.equal(gatewaySpecialist.GatewaySpecialistAdapter, api.GatewaySpecialistAdapter);
+    assert.ok(gatewaySpecialist.TERMINAL_SPECIALIST_STATES instanceof Set);
+    console.log('packed Gateway Specialist Adapter subpath PASS');
   `;
   run(process.execPath, ['--input-type=module', '-e', smoke], consumerRoot, 'packed consumer API smoke');
   console.log(`Execution Runtime packed consumer PASS: ${packed[0].filename} (${packed[0].entryCount} files)`);

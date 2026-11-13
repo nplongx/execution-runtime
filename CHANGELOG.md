@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.6
+
+- Extract the Gateway specialist RPC adapter behind an explicit WorkflowStatePort v2 and node-role Gateway client contract.
+- Keep task/lease/start-intent/send-claim/attachment/result reconciliation operations delegated to WorkflowStatePort; no Workflow database or transaction ownership moved.
+- Preserve one-way M12 start claims and fail-closed unknown-outcome quarantine. Automated external Gateway lookup/reconciliation remains unimplemented.
+- Add public root and `./gateway-specialist-adapter` exports with packed-consumer coverage.
+
 ## 0.1.5
 
 - Extract the deterministic in-memory runner fixture behind ExecutionPersistencePort v1; no Workflow Store, WorkflowStatePort or database handle is accepted.
