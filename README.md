@@ -25,6 +25,7 @@ import {
   createExecutionStateParticipant,
   ExecutionPersistenceStore,
   createExecutionPersistencePort,
+  resolveExecutionPersistencePort,
   createExecutionPersistenceParticipant,
 } from '@runalith/execution-runtime';
 
@@ -36,6 +37,8 @@ const providerLedger = new ExecutionPersistenceStore(db);
 const providerReadsAndWrites = createExecutionPersistencePort(providerLedger);
 const providerReadParticipant = createExecutionPersistenceParticipant(providerLedger, db);
 ~~~
+
+`resolveExecutionPersistencePort(explicitPort, workflowStatePort)` validates and returns an explicitly supplied port, or builds the frozen legacy adapter for an older WorkflowStatePort v2 consumer. Use the explicit package port in new host composition; the compatibility adapter exists to preserve older callers while they migrate.
 
 The ports and participants do not expose a database handle or transaction callback. A composing Workflow transaction owner may invoke typed participants while holding its existing writer reservation. The read-only `ExecutionStatePort` exposes only named queries. The provider-ledger port exposes only named provider persistence methods. `assertSharedConnection` checks identity without returning the connection.
 

@@ -10,6 +10,7 @@ import {
   assertExecutionStateParticipant,
   ExecutionPersistenceStore,
   createExecutionPersistencePort,
+  resolveExecutionPersistencePort,
   assertExecutionPersistencePort,
   createExecutionPersistenceParticipant,
   createExecutionRequest,
@@ -79,6 +80,7 @@ test('Execution provider ledger owns provider tables and bounded provider method
     assert.equal(Object.isFrozen(port), true);
     assert.equal(Object.hasOwn(port, 'db'), false);
     assert.equal(typeof port.transaction, 'undefined');
+    assert.equal(resolveExecutionPersistencePort(port, null), port);
     const participant = createExecutionPersistenceParticipant(store, db);
     assert.equal(Object.isFrozen(participant), true);
     assert.equal(Object.hasOwn(participant, 'db'), false);

@@ -22,7 +22,7 @@ try {
   const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', temporaryRoot], root, 'npm pack'));
   assert.equal(packed.length, 1);
   assert.equal(packed[0].name, '@runalith/execution-runtime');
-  assert.equal(packed[0].version, '0.1.0');
+  assert.equal(packed[0].version, '0.1.1');
   const tarball = path.join(temporaryRoot, packed[0].filename);
   run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--prefix', consumerRoot, tarball], root,
     'install packed Execution Runtime into clean consumer');
@@ -30,7 +30,7 @@ try {
     import assert from 'node:assert/strict';
     const api = await import('@runalith/execution-runtime');
     for (const key of ['ExecutionStateStore','createExecutionStatePort','createExecutionStateParticipant',
-      'ExecutionPersistenceStore','createExecutionPersistencePort','createExecutionPersistenceParticipant',
+      'ExecutionPersistenceStore','createExecutionPersistencePort','resolveExecutionPersistencePort','createExecutionPersistenceParticipant',
       'createExecutionRequest','createExecutionResult','providerDispatchKey']) {
       assert.equal(typeof api[key], 'function', key + ' must be exported by packed artifact');
     }

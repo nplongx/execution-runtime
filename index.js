@@ -25,6 +25,7 @@ export {
 export {
   createExecutionPersistencePort,
   createLegacyExecutionPersistencePort,
+  resolveExecutionPersistencePort,
   assertExecutionPersistencePort,
   EXECUTION_PERSISTENCE_PORT_VERSION,
   EXECUTION_PERSISTENCE_PORT_METHODS
