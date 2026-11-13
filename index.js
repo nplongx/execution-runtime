@@ -54,3 +54,9 @@ export { GitHubActionsProvider } from './src/github-actions-provider.js';
 export { DeterministicRunnerProvider } from './src/deterministic-runner-provider.js';
 export { GatewaySpecialistAdapter, TERMINAL_SPECIALIST_STATES } from './src/gateway-specialist-adapter.js';
 export { ProviderDispatchScheduler } from './src/provider-dispatch-scheduler.js';
+
+export {
+  parseCanonicalExecutionExitMarker,
+  readCanonicalExecutionExitMarkerFile,
+  assertExecutionBatchRetryLineage
+} from './src/execution-observation.js';

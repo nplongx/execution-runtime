@@ -22,7 +22,7 @@ try {
   const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', temporaryRoot], root, 'npm pack'));
   assert.equal(packed.length, 1);
   assert.equal(packed[0].name, '@runalith/execution-runtime');
-  assert.equal(packed[0].version, '0.1.7');
+  assert.equal(packed[0].version, '0.1.8');
   const tarball = path.join(temporaryRoot, packed[0].filename);
   run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--prefix', consumerRoot, tarball], root,
     'install packed Execution Runtime into clean consumer');
@@ -33,7 +33,8 @@ try {
       'ExecutionPersistenceStore','createExecutionPersistencePort','resolveExecutionPersistencePort','createExecutionPersistenceParticipant',
       'createExecutionRequest','createExecutionResult','providerDispatchKey','ProviderAdmissionController',
       'isProviderRateLimitError','GitHubOidcVerifier','RunnerAdmissionBroker','createRunnerAdmissionBroker',
-      'GitHubActionsProvider','DeterministicRunnerProvider','GatewaySpecialistAdapter','ProviderDispatchScheduler']) {
+      'GitHubActionsProvider','DeterministicRunnerProvider','GatewaySpecialistAdapter','ProviderDispatchScheduler',
+      'parseCanonicalExecutionExitMarker','readCanonicalExecutionExitMarkerFile','assertExecutionBatchRetryLineage']) {
       assert.equal(typeof api[key], 'function', key + ' must be exported by packed artifact');
     }
     console.log('packed Execution Runtime public API PASS');
@@ -54,6 +55,11 @@ try {
     const scheduler = await import('@runalith/execution-runtime/provider-dispatch-scheduler');
     assert.equal(scheduler.ProviderDispatchScheduler, api.ProviderDispatchScheduler);
     console.log('packed Provider Dispatch Scheduler subpath PASS');
+    const observations = await import('@runalith/execution-runtime/execution-observation');
+    assert.equal(observations.parseCanonicalExecutionExitMarker, api.parseCanonicalExecutionExitMarker);
+    assert.equal(observations.readCanonicalExecutionExitMarkerFile, api.readCanonicalExecutionExitMarkerFile);
+    assert.equal(observations.assertExecutionBatchRetryLineage, api.assertExecutionBatchRetryLineage);
+    console.log('packed Execution Observation subpath PASS');
   `;
   run(process.execPath, ['--input-type=module', '-e', smoke], consumerRoot, 'packed consumer API smoke');
   console.log(`Execution Runtime packed consumer PASS: ${packed[0].filename} (${packed[0].entryCount} files)`);

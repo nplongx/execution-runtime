@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.8
+
+- Move canonical local execution exit-marker parsing and bounded no-follow file reads into a standalone execution observation module.
+- Move pure execution-batch retry-lineage verification into Execution Runtime; callers retain ownership of event reads and transaction boundaries.
+- Export root and execution-observation APIs with packed-consumer coverage.
+
 ## 0.1.7
 
 - Extract provider dispatch scheduling, durable dispatch-intent reconciliation, pre-send retry and bounded task fan-out into `ProviderDispatchScheduler`.

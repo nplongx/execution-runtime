@@ -99,3 +99,6 @@ Versions `0.1.x` are experimental and GitHub-first. Not published to npm. Storag
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+
+The execution-observation module exports canonical local supervisor exit-marker parsing, bounded no-follow exit-marker file reads and pure execution-batch retry-lineage verification. It performs no process launch or database access; callers own evidence retrieval and transaction boundaries.
