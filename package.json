@@ -1,0 +1,26 @@
+{
+  "name": "@runalith/execution-runtime",
+  "version": "0.1.0",
+  "description": "Local-first Execution persistence contracts and SQLite state owners for Runalith.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./execution-state": "./src/execution-state-store.js",
+    "./execution-persistence": "./src/execution-persistence-store.js",
+    "./execution-contract": "./src/execution-contract.js"
+  },
+  "files": ["index.js", "src/", "README.md", "LICENSE", "SECURITY.md", "CHANGELOG.md"],
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "test": "node --test tests/*.mjs",
+    "check": "node --check index.js && node --test tests/*.mjs",
+    "test:packed-consumer": "node scripts/test-packed-consumer.mjs",
+    "pack:check": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "@runalith/cos-ap": "https://github.com/nplongx/runalith-cos-ap/archive/b6f2b51d549ba2f287ebd49d18ce29a212b2270a.tar.gz",
+    "@runalith/workflow-contracts": "https://github.com/nplongx/runalith-workflow-contracts/archive/4db6c79839fe27f1171be341b824dc3ebd6f8aa3.tar.gz"
+  }
+}
