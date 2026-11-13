@@ -51,3 +51,4 @@ export {
   createRunnerAdmissionBroker
 } from './src/runner-admission-broker.js';
 export { GitHubActionsProvider } from './src/github-actions-provider.js';
+export { DeterministicRunnerProvider } from './src/deterministic-runner-provider.js';

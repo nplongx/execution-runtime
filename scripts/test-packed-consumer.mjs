@@ -22,7 +22,7 @@ try {
   const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', temporaryRoot], root, 'npm pack'));
   assert.equal(packed.length, 1);
   assert.equal(packed[0].name, '@runalith/execution-runtime');
-  assert.equal(packed[0].version, '0.1.4');
+  assert.equal(packed[0].version, '0.1.5');
   const tarball = path.join(temporaryRoot, packed[0].filename);
   run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--prefix', consumerRoot, tarball], root,
     'install packed Execution Runtime into clean consumer');
@@ -33,7 +33,7 @@ try {
       'ExecutionPersistenceStore','createExecutionPersistencePort','resolveExecutionPersistencePort','createExecutionPersistenceParticipant',
       'createExecutionRequest','createExecutionResult','providerDispatchKey','ProviderAdmissionController',
       'isProviderRateLimitError','GitHubOidcVerifier','RunnerAdmissionBroker','createRunnerAdmissionBroker',
-      'GitHubActionsProvider']) {
+      'GitHubActionsProvider','DeterministicRunnerProvider']) {
       assert.equal(typeof api[key], 'function', key + ' must be exported by packed artifact');
     }
     console.log('packed Execution Runtime public API PASS');
@@ -44,6 +44,9 @@ try {
     const githubProvider = await import('@runalith/execution-runtime/github-actions-provider');
     assert.equal(githubProvider.GitHubActionsProvider, api.GitHubActionsProvider);
     console.log('packed GitHub Actions Provider subpath PASS');
+    const deterministicRunner = await import('@runalith/execution-runtime/deterministic-runner-provider');
+    assert.equal(deterministicRunner.DeterministicRunnerProvider, api.DeterministicRunnerProvider);
+    console.log('packed Deterministic Runner Provider subpath PASS');
   `;
   run(process.execPath, ['--input-type=module', '-e', smoke], consumerRoot, 'packed consumer API smoke');
   console.log(`Execution Runtime packed consumer PASS: ${packed[0].filename} (${packed[0].entryCount} files)`);

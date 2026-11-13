@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5
+
+- Extract the deterministic in-memory runner fixture behind ExecutionPersistencePort v1; no Workflow Store, WorkflowStatePort or database handle is accepted.
+- Keep the legacy M11 host constructor as a compatibility composition. The package API is named `DeterministicRunnerProvider` and makes no M11 product-specific contract claim.
+- Add public root and `./deterministic-runner-provider` exports and packed-consumer coverage.
+
 ## 0.1.4
 
 - Extract the GitHub Actions provider transport, dispatch/reconciliation logic and bounded artifact/evidence reader behind explicit ExecutionPersistencePort and injected WorkflowStatePort v2 contracts.
