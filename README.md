@@ -3,7 +3,7 @@
 [![CI](https://github.com/nplongx/execution-runtime/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nplongx/execution-runtime/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**@runalith/execution-runtime** owns local Execution persistence primitives and bounded state APIs: attempts, results, checkpoints, execution batches/items, provider runs and provider dispatch intents. It also exports versioned read-only ports, typed write/read participants, COS-AP execution request/result contracts, Provider Admission and GitHub Actions Runner Admission verification/broker logic.
+**@runalith/execution-runtime** owns local Execution persistence primitives and bounded state APIs: attempts, results, checkpoints, execution batches/items, provider runs and provider dispatch intents. It also exports versioned read-only ports, typed write/read participants, COS-AP execution request/result contracts, Provider Admission, GitHub Actions OIDC Runner Admission and GitHub Actions provider transport/reconciliation.
 
 This package is an in-process source/runtime boundary, not a separate service or database. It accepts a caller-owned `node:sqlite` connection. In the current integration, Workflow owns the `jobs`, `tasks`, event journal and surrounding cross-domain transactions; Execution owns its tables and bounded SQL methods. Foreign keys to Workflow-owned rows intentionally remain. A package split does not imply a process split or remove same-connection atomicity requirements.
 
@@ -13,7 +13,7 @@ This package is an in-process source/runtime boundary, not a separate service or
 npm install github:nplongx/execution-runtime
 ~~~
 
-Requirements: Node.js >=22.13.0 and built-in `node:sqlite`. Runtime dependencies are pinned GitHub source packages: COS-AP v1 and Workflow Contracts.
+Requirements: Node.js >=22.13.0 and built-in `node:sqlite`. Runtime dependencies are pinned GitHub source packages: COS-AP v1, Execution Evidence and Workflow Contracts.
 
 ## Composition
 
@@ -54,6 +54,20 @@ The controller owns only `provider_admission` and `provider_admission_leases`. I
 
 Runner Admission can be composed without a database handle. `GitHubOidcVerifier` verifies GitHub Actions OIDC tokens using an injected fetch implementation; `RunnerAdmissionBroker` validates repository/workflow/run claims, calls an injected `authorizeBinding` authority, and provisions through an injected Gateway interface. The broker uses in-memory replay/single-flight maps scoped to one process. Those maps are not a durable replay ledger and do not replace a cross-process nonce/replay store. Gateway provisioning credentials remain inside the Gateway trust boundary; the Gateway service itself is not moved into this package.
 
+The GitHub Actions provider is composed with an explicit `WorkflowStatePort v2` and `ExecutionPersistencePort v1`. The package owns GitHub API transport, dispatch identity validation, one-way send sequencing, run lookup/reconciliation, paginated status retrieval and bounded artifact/evidence parsing. It does not construct WorkflowStatePort or open Workflow SQLite. The host retains environment/CLI token resolution and the legacy `store` adapter. Durable lease validation, dispatch-send claim, task/parent checks, event writes and final fenced provider-result commit remain Workflow-owned operations on the exact shared SQLite connection. This is a package boundary, not an independent worker or transaction coordinator.
+
+~~~js
+import { GitHubActionsProvider } from '@runalith/execution-runtime/github-actions-provider';
+
+const provider = new GitHubActionsProvider({
+  token,
+  owner,
+  repo,
+  statePort: workflowStatePort,                 // WorkflowStatePort v2
+  executionPersistencePort: providerLedgerPort, // ExecutionPersistencePort v1
+});
+~~~
+
 `resolveExecutionPersistencePort(explicitPort, workflowStatePort)` validates and returns an explicitly supplied port, or builds the frozen legacy adapter for an older WorkflowStatePort v2 consumer. Use the explicit package port in new host composition; the compatibility adapter exists to preserve older callers while they migrate.
 
 The ports and participants do not expose a database handle or transaction callback. A composing Workflow transaction owner may invoke typed participants while holding its existing writer reservation. The read-only `ExecutionStatePort` exposes only named queries. The provider-ledger port exposes only named provider persistence methods. `assertSharedConnection` checks identity without returning the connection.
@@ -66,7 +80,7 @@ The ports and participants do not expose a database handle or transaction callba
 | `provider_runs`, `provider_dispatch_intents` | `ExecutionPersistenceStore` | Execution methods own provider-only mutations; WorkflowStatePort coordinates cross-domain send/result/lease fences |
 | `jobs`, `tasks`, `task_leases`, shared `events` | Workflow Runtime | Workflow Runtime |
 
-This package does not own OS process creation, local execution supervision, remote provider transport, scheduling, M12 unknown-outcome reconciliation, Gateway provisioning authority, Workflow approval authority, trust roots or filesystem write authorization. Those remain host/provider/Workflow concerns until their own contracts and recovery protocols are extracted.
+This package does not own OS process creation for local tasks, local execution supervision, scheduler lifecycle, M12 Native Specialist unknown-outcome reconciliation, Gateway provisioning authority, Workflow approval authority, trust roots or filesystem write authorization. Those remain host/provider/Workflow concerns until their own contracts and recovery protocols are extracted.
 
 ## Validation
 
@@ -74,7 +88,7 @@ This package does not own OS process creation, local execution supervision, remo
 
 ## Status
 
-Version `0.1.0` is experimental and GitHub-first. Not published to npm. Storage/schema compatibility remains pre-1.0.
+Versions `0.1.x` are experimental and GitHub-first. Not published to npm. Storage/schema compatibility remains pre-1.0.
 
 ## License
 

@@ -1,7 +1,7 @@
 {
   "name": "@runalith/execution-runtime",
-  "version": "0.1.3",
-  "description": "Local-first Execution persistence contracts and SQLite state owners for Runalith.",
+  "version": "0.1.4",
+  "description": "Execution runtime persistence, provider adapters and bounded execution contracts for Runalith.",
   "license": "MIT",
   "type": "module",
   "main": "./index.js",
@@ -10,7 +10,8 @@
     "./execution-state": "./src/execution-state-store.js",
     "./execution-persistence": "./src/execution-persistence-store.js",
     "./execution-contract": "./src/execution-contract.js",
-    "./runner-admission": "./src/runner-admission-broker.js"
+    "./runner-admission": "./src/runner-admission-broker.js",
+    "./github-actions-provider": "./src/github-actions-provider.js"
   },
   "files": [
     "index.js",
@@ -31,6 +32,7 @@
   },
   "dependencies": {
     "@runalith/cos-ap": "https://github.com/nplongx/runalith-cos-ap/archive/b6f2b51d549ba2f287ebd49d18ce29a212b2270a.tar.gz",
+    "@runalith/execution-evidence": "https://github.com/nplongx/execution-evidence/archive/1226630831c0e45358c28c4ce60f03fa4185ab66.tar.gz",
     "@runalith/workflow-contracts": "https://github.com/nplongx/runalith-workflow-contracts/archive/4db6c79839fe27f1171be341b824dc3ebd6f8aa3.tar.gz"
   }
 }

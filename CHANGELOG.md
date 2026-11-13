@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4
+
+- Extract the GitHub Actions provider transport, dispatch/reconciliation logic and bounded artifact/evidence reader behind explicit ExecutionPersistencePort and injected WorkflowStatePort v2 contracts.
+- Add public root and `./github-actions-provider` exports; retain host environment/store composition as a compatibility facade.
+- The package implementation does not open or own Workflow state. Lease, one-way send-claim, task/event and fenced result transactions remain Workflow-owned operations on the caller-supplied shared connection.
+- Add the immutable Execution Evidence package dependency for request/result validation and artifact verification.
+
 ## 0.1.3
 
 - Extract GitHub Actions OIDC verification and the stateless Runner Admission broker behind injected binding-authority and Gateway provisioner interfaces.

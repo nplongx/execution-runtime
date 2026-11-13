@@ -50,3 +50,4 @@ export {
   RunnerAdmissionBroker,
   createRunnerAdmissionBroker
 } from './src/runner-admission-broker.js';
+export { GitHubActionsProvider } from './src/github-actions-provider.js';
