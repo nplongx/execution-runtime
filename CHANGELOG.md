@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.7
+
+- Extract provider dispatch scheduling, durable dispatch-intent reconciliation, pre-send retry and bounded task fan-out into `ProviderDispatchScheduler`.
+- Require explicit WorkflowStatePort v2 and ExecutionPersistencePort v1; package code no longer constructs WorkflowStatePort or provides a legacy store adapter.
+- Add root and `./provider-dispatch-scheduler` exports plus packed-consumer coverage. The host keeps `DistributedScheduler` as a compatibility wrapper for legacy `store` callers.
+- Preserve Workflow-owned task leases, task/job checks, event writes and cross-domain transaction fences on the same injected SQLite connection.
+
 ## 0.1.6
 
 - Extract the Gateway specialist RPC adapter behind an explicit WorkflowStatePort v2 and node-role Gateway client contract.
