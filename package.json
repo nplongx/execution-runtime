@@ -1,6 +1,6 @@
 {
   "name": "@runalith/execution-runtime",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Local-first Execution persistence contracts and SQLite state owners for Runalith.",
   "license": "MIT",
   "type": "module",

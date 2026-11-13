@@ -22,7 +22,7 @@ try {
   const packed = JSON.parse(run('npm', ['pack', '--json', '--pack-destination', temporaryRoot], root, 'npm pack'));
   assert.equal(packed.length, 1);
   assert.equal(packed[0].name, '@runalith/execution-runtime');
-  assert.equal(packed[0].version, '0.1.1');
+  assert.equal(packed[0].version, '0.1.2');
   const tarball = path.join(temporaryRoot, packed[0].filename);
   run('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', '--prefix', consumerRoot, tarball], root,
     'install packed Execution Runtime into clean consumer');
@@ -31,7 +31,8 @@ try {
     const api = await import('@runalith/execution-runtime');
     for (const key of ['ExecutionStateStore','createExecutionStatePort','createExecutionStateParticipant',
       'ExecutionPersistenceStore','createExecutionPersistencePort','resolveExecutionPersistencePort','createExecutionPersistenceParticipant',
-      'createExecutionRequest','createExecutionResult','providerDispatchKey']) {
+      'createExecutionRequest','createExecutionResult','providerDispatchKey','ProviderAdmissionController',
+      'isProviderRateLimitError']) {
       assert.equal(typeof api[key], 'function', key + ' must be exported by packed artifact');
     }
     console.log('packed Execution Runtime public API PASS');

@@ -38,6 +38,20 @@ const providerReadsAndWrites = createExecutionPersistencePort(providerLedger);
 const providerReadParticipant = createExecutionPersistenceParticipant(providerLedger, db);
 ~~~
 
+Provider admission can be composed on the same caller-owned SQLite connection while using a narrow WorkflowStatePort v2 only for task/event operations:
+
+~~~js
+import { ProviderAdmissionController } from '@runalith/execution-runtime';
+
+const admission = new ProviderAdmissionController(db, {
+  workflowStatePort,
+  hardBlockMs: 20 * 60_000,
+  leaseMs: 10 * 60_000,
+});
+~~~
+
+The controller owns only `provider_admission` and `provider_admission_leases`. It does not read or write Workflow tables. Admission/cooldown state and lease transitions are atomic on the injected connection; workflow task status and event recording remain delegated to WorkflowStatePort v2. This is an in-process owner split, not an independent database.
+
 `resolveExecutionPersistencePort(explicitPort, workflowStatePort)` validates and returns an explicitly supplied port, or builds the frozen legacy adapter for an older WorkflowStatePort v2 consumer. Use the explicit package port in new host composition; the compatibility adapter exists to preserve older callers while they migrate.
 
 The ports and participants do not expose a database handle or transaction callback. A composing Workflow transaction owner may invoke typed participants while holding its existing writer reservation. The read-only `ExecutionStatePort` exposes only named queries. The provider-ledger port exposes only named provider persistence methods. `assertSharedConnection` checks identity without returning the connection.

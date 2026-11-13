@@ -44,3 +44,4 @@ export {
   ExecutionResultStatus
 } from './src/execution-contract.js';
 export * from './src/provider-dispatch-identity.js';
+export { ProviderAdmissionController, ProviderStates, isProviderRateLimitError } from './src/provider-admission.js';
