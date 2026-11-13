@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3
+
+- Extract GitHub Actions OIDC verification and the stateless Runner Admission broker behind injected binding-authority and Gateway provisioner interfaces.
+- Export Runner Admission from the package root and `./runner-admission` subpath; retain host compatibility imports during migration.
+- Keep Gateway provisioning authority in the Gateway host. Broker replay/idempotency maps remain process-local and are not a durable replay ledger.
+- No change to shared Workflow/Execution database or transaction ownership.
+
 ## 0.1.2
 
 - Extract the bounded Provider Admission controller and its provider-owned `provider_admission*` schema behind an injected WorkflowStatePort v2 task/event API.

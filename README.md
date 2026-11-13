@@ -3,7 +3,7 @@
 [![CI](https://github.com/nplongx/execution-runtime/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nplongx/execution-runtime/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**@runalith/execution-runtime** owns local Execution persistence primitives and bounded state APIs: attempts, results, checkpoints, execution batches/items, provider runs and provider dispatch intents. It also exports versioned read-only ports, typed write/read participants and COS-AP execution request/result contracts.
+**@runalith/execution-runtime** owns local Execution persistence primitives and bounded state APIs: attempts, results, checkpoints, execution batches/items, provider runs and provider dispatch intents. It also exports versioned read-only ports, typed write/read participants, COS-AP execution request/result contracts, Provider Admission and GitHub Actions Runner Admission verification/broker logic.
 
 This package is an in-process source/runtime boundary, not a separate service or database. It accepts a caller-owned `node:sqlite` connection. In the current integration, Workflow owns the `jobs`, `tasks`, event journal and surrounding cross-domain transactions; Execution owns its tables and bounded SQL methods. Foreign keys to Workflow-owned rows intentionally remain. A package split does not imply a process split or remove same-connection atomicity requirements.
 
@@ -52,6 +52,8 @@ const admission = new ProviderAdmissionController(db, {
 
 The controller owns only `provider_admission` and `provider_admission_leases`. It does not read or write Workflow tables. Admission/cooldown state and lease transitions are atomic on the injected connection; workflow task status and event recording remain delegated to WorkflowStatePort v2. This is an in-process owner split, not an independent database.
 
+Runner Admission can be composed without a database handle. `GitHubOidcVerifier` verifies GitHub Actions OIDC tokens using an injected fetch implementation; `RunnerAdmissionBroker` validates repository/workflow/run claims, calls an injected `authorizeBinding` authority, and provisions through an injected Gateway interface. The broker uses in-memory replay/single-flight maps scoped to one process. Those maps are not a durable replay ledger and do not replace a cross-process nonce/replay store. Gateway provisioning credentials remain inside the Gateway trust boundary; the Gateway service itself is not moved into this package.
+
 `resolveExecutionPersistencePort(explicitPort, workflowStatePort)` validates and returns an explicitly supplied port, or builds the frozen legacy adapter for an older WorkflowStatePort v2 consumer. Use the explicit package port in new host composition; the compatibility adapter exists to preserve older callers while they migrate.
 
 The ports and participants do not expose a database handle or transaction callback. A composing Workflow transaction owner may invoke typed participants while holding its existing writer reservation. The read-only `ExecutionStatePort` exposes only named queries. The provider-ledger port exposes only named provider persistence methods. `assertSharedConnection` checks identity without returning the connection.
@@ -64,7 +66,7 @@ The ports and participants do not expose a database handle or transaction callba
 | `provider_runs`, `provider_dispatch_intents` | `ExecutionPersistenceStore` | Execution methods own provider-only mutations; WorkflowStatePort coordinates cross-domain send/result/lease fences |
 | `jobs`, `tasks`, `task_leases`, shared `events` | Workflow Runtime | Workflow Runtime |
 
-This package does not own OS process creation, local execution supervision, remote provider transport, scheduling, M12 Gateway reconciliation, Workflow approval authority, trust roots or filesystem write authorization. Those remain host/provider/Workflow concerns until their own contracts and recovery protocols are extracted.
+This package does not own OS process creation, local execution supervision, remote provider transport, scheduling, M12 unknown-outcome reconciliation, Gateway provisioning authority, Workflow approval authority, trust roots or filesystem write authorization. Those remain host/provider/Workflow concerns until their own contracts and recovery protocols are extracted.
 
 ## Validation
 

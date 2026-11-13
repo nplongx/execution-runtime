@@ -45,3 +45,8 @@ export {
 } from './src/execution-contract.js';
 export * from './src/provider-dispatch-identity.js';
 export { ProviderAdmissionController, ProviderStates, isProviderRateLimitError } from './src/provider-admission.js';
+export {
+  GitHubOidcVerifier,
+  RunnerAdmissionBroker,
+  createRunnerAdmissionBroker
+} from './src/runner-admission-broker.js';
